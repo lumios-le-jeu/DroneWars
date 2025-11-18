@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DroneLaser - Événements d'Équipe avec Drones FPV</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        secondary: '#0284c7',
+                        accent: '#f97316',
+                        dark: '#0f172a',
+                        starwars: {
+                            blue: '#59C1FD',
+                            yellow: '#FFE81F',
+                            red: '#FF3E3E',
+                            purple: '#B57EDC'
+                        }
+                    },
+                    fontFamily: {
+                        'orbitron': ['Orbitron', 'sans-serif'],
+                        'exo': ['Exo 2', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'galaxy': '0 0 15px rgba(94, 92, 230, 0.5), 0 0 30px rgba(94, 92, 230, 0.3)',
+                        'laser': '0 0 10px #0ea5e9, 0 0 20px #0ea5e9, 0 0 30px #0ea5e9'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .stars {
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 160px 30px, #ddd, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: zoom 5s infinite;
+            opacity: 0.3;
+        }
+        
+        @keyframes zoom {
+            0% { background-position: 0 0; }
+            100% { background-position: 200px 100px; }
+        }
+        
+        .neon-text {
+            text-shadow: 
+                0 0 5px #fff,
+                0 0 10px #fff,
+                0 0 15px #0ea5e9,
+                0 0 20px #0ea5e9,
+                0 0 25px #0ea5e9;
+        }
+        
+        .laser-beam {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #0ea5e9, transparent);
+            box-shadow: 0 0 10px #0ea5e9;
+            animation: beam 2s infinite;
+        }
+        
+        @keyframes beam {
+            0% { width: 0; opacity: 0; }
+            50% { opacity: 1; }
+            100% { width: 100%; opacity: 0; }
+        }
+        
+        .glass-effect {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 5px rgba(94, 92, 230, 0.5); }
+            100% { box-shadow: 0 0 20px rgba(94, 92, 230, 0.8), 0 0 30px rgba(94, 92, 230, 0.6); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white font-exo">
+    <!-- Header -->
+    <header class="glass-effect fixed w-full z-50 backdrop-blur-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="relative">
+                    <i class="fas fa-drone text-starwars-blue text-4xl mr-3 pulse-glow"></i>
+                    <div class="absolute -top-1 -right-1 w-3 h-3 bg-starwars-yellow rounded-full animate-ping"></div>
+                </div>
+                <h1 class="text-3xl font-bold font-orbitron tracking-wider">DRONE<span class="text-starwars-blue">LASER</span></h1>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#accueil" class="font-orbitron tracking-wider hover:text-starwars-blue transition-all duration-300 neon-text text-sm">ACCUEIL</a>
+                <a href="#services" class="font-orbitron tracking-wider hover:text-starwars-blue transition-all duration-300 neon-text text-sm">SERVICES</a>
+                <a href="#jeux" class="font-orbitron tracking-wider hover:text-starwars-blue transition-all duration-300 neon-text text-sm">MODES DE JEU</a>
+                <a href="#tarifs" class="font-orbitron tracking-wider hover:text-starwars-blue transition-all duration-300 neon-text text-sm">TARIFS</a>
+                <a href="#contact" class="font-orbitron tracking-wider hover:text-starwars-blue transition-all duration-300 neon-text text-sm">CONTACT</a>
+            </nav>
+            <button class="md:hidden text-2xl text-starwars-blue">
+                <i class="fas fa-jedi"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="accueil" class="pt-32 pb-20 relative overflow-hidden">
+        <div class="stars absolute inset-0 z-0"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-16 md:mb-0">
+                    <div class="flex items-center mb-4">
+                        <span class="bg-starwars-blue text-dark px-3 py-1 rounded-full text-sm font-orbitron mr-3">NOUVEAU</span>
+                        <span class="text-starwars-yellow font-orbitron">EXPÉRIENCE INTERSTELLAIRE</span>
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-bold font-orbitron mb-6 leading-tight">
+                        Événements d'Équipe <span class="text-starwars-blue block">Interstellaires</span>
+                    </h1>
+                    <p class="text-xl mb-10 max-w-2xl">Plongez dans l'univers futuriste où vos collaborateurs pilotent des drones équipés de lasers dans des scénarios de jeu immersifs inspirés de la galaxie.</p>
+                    <div class="flex flex-col sm:flex-row gap-6">
+                        <a href="#contact" class="bg-starwars-blue hover:bg-blue-500 text-dark font-bold py-4 px-8 rounded-lg text-center transition duration-300 font-orbitron tracking-wider shadow-lg shadow-blue-500/30">DEMANDER UN DEVIS</a>
+                        <a href="#jeux" class="glass-effect border-2 border-starwars-blue text-starwars-blue hover:bg-starwars-blue hover:text-dark font-bold py-4 px-8 rounded-lg text-center transition duration-300 font-orbitron tracking-wider">DÉCOUVRIR LES JEUX</a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center relative">
+                    <div class="relative w-full max-w-lg">
+                        <div class="absolute -top-10 -left-10 w-64 h-64 rounded-full bg-starwars-blue opacity-20 blur-3xl animate-pulse"></div>
+                        <div class="absolute -bottom-10 -right-10 w-64 h-64 rounded-full bg-starwars-purple opacity-20 blur-3xl animate-pulse"></div>
+                        
+                        <div class="relative glass-effect rounded-3xl p-8 border border-gray-700">
+                            <div class="flex justify-center mb-6">
+                                <div class="relative">
+                                    <div class="w-48 h-48 rounded-full border-2 border-starwars-blue flex items-center justify-center">
+                                        <div class="w-40 h-40 rounded-full border border-starwars-blue flex items-center justify-center">
+                                            <div class="w-32 h-32 rounded-full border-2 border-starwars-blue flex items-center justify-center">
+                                                <i class="fas fa-drone text-5xl text-starwars-blue pulse-glow"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="absolute top-0 right-0 w-6 h-6 bg-starwars-yellow rounded-full animate-ping"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center">
+                                <h3 class="text-2xl font-orbitron mb-2">DRONE LASER X-WING</h3>
+                                <p class="text-gray-300 mb-6">Équipé de canon laser et système de détection</p>
+                                
+                                <div class="grid grid-cols-3 gap-4 text-center">
+                                    <div class="glass-effect p-3 rounded-lg">
+                                        <i class="fas fa-tachometer-alt text-starwars-blue text-xl mb-2"></i>
+                                        <p class="text-sm">Vitesse</p>
+                                        <div class="w-full bg-gray-700 rounded-full h-2 mt-2">
+                                            <div class="bg-starwars-blue h-2 rounded-full w-4/5"></div>
+                                        </div>
+                                    </div>
+                                    <div class="glass-effect p-3 rounded-lg">
+                                        <i class="fas fa-shield-alt text-starwars-purple text-xl mb-2"></i>
+                                        <p class="text-sm">Armure</p>
+                                        <div class="w-full bg-gray-700 rounded-full h-2 mt-2">
+                                            <div class="bg-starwars-purple h-2 rounded-full w-3/4"></div>
+                                        </div>
+                                    </div>
+                                    <div class="glass-effect p-3 rounded-lg">
+                                        <i class="fas fa-bullseye text-starwars-yellow text-xl mb-2"></i>
+                                        <p class="text-sm">Précision</p>
+                                        <div class="w-full bg-gray-700 rounded-full h-2 mt-2">
+                                            <div class="bg-starwars-yellow h-2 rounded-full w-5/6"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <a href="#services" class="text-starwars-blue">
+                <i class="fas fa-chevron-down text-3xl"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-gray-900 relative">
+        <div class="stars absolute inset-0 z-0"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold font-orbitron mb-6 neon-text">Nos Services Interstellaires</h2>
+                <div class="w-24 h-1 bg-starwars-blue mx-auto mb-6"></div>
+                <p class="text-xl max-w-3xl mx-auto">Transformez vos événements d'entreprise en missions interstellaires mémorables avec nos solutions innovantes de jeu de drones FPV.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="glass-effect rounded-2xl p-8 border border-gray-700 hover:border-starwars-blue transition-all duration-500 transform hover:-translate-y-2">
+                    <div class="w-20 h-20 rounded-full bg-starwars-blue flex items-center justify-center mb-6 mx-auto pulse-glow">
+                        <i class="fas fa-users text-dark text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-orbitron text-center mb-4">Team Building Galactique</h3>
+                    <p class="text-gray-300 text-center mb-6">Renforcez la cohésion d'équipe en faisant collaborer vos employés dans des missions de drones stratégiques inspirées de l'univers Star Wars.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center"><i class="fas fa-check-circle text-starwars-blue mr-3"></i> Groupes de 5 à 100 personnes</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-starwars-blue mr-3"></i> Adapté à tous les niveaux</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-starwars-blue mr-3"></i> Animation par Jedi Master</li>
+                    </ul>
+                </div>
+                
+                <div class="glass-effect rounded-2xl p-8 border border-gray-700 hover:border-starwars-yellow transition-all duration-500 transform hover:-translate-y-2">
+                    <div class="w-20 h-20 rounded-full bg-starwars-yellow flex items-center justify-center mb-6 mx-auto pulse-glow">
+                        <i class="fas fa-trophy text-dark text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-orbitron text-center mb-4">Tournois Interstellaires</h3>
+                    <p class="text-gray-300 text-center mb-6">Organisez des tournois compétitifs entre départements ou entreprises avec classement et récompenses dignes de la galaxie.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center"><i class="fas fa-check-circle text-starwars-yellow mr-3"></i> Formats variés (Death Star, Hoth, Tatooine)</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-starwars-yellow mr-3"></i> Système de points en temps réel</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-starwars-yellow mr-3"></i> Podium et trophées personnalisés</li>
+                    </ul>
+                </div>
+                
+                <div class="glass-effect rounded-2xl p-8 border border-gray-700 hover:border-starwars-purple transition-all duration-500 transform hover:-translate-y-2">
+                    <div class="w-20 h-20 rounded-full bg-starwars-purple flex items-center justify-center mb-6 mx-auto pulse-glow">
+                        <i class="fas fa-chart-line text-dark text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-orbitron text-center mb-4">Formation Jedi</h3>
+                    <p class="text-gray-300 text-center mb-6">Développez les compétences en leadership, communication et prise de décision à travers le pilotage de drones de combat.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center"><i class="fas fa-check-circle text-starwars-purple mr-3"></i> Coaching personnalisé</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-starwars-purple mr-3"></i> Analyse de performance</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-starwars-purple mr-3"></i> Rapports détaillés</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Modes Section -->
+    <section id="jeux" class="py-20 bg-gray-900 relative">
+        <div class="stars absolute inset-0 z-0"></div>
+        <div class="absolute top-20 left-10 w-64 h-64 bg-starwars-blue rounded-full filter blur-3xl opacity-10 animate-pulse"></div>
+        <div class="absolute bottom-10 right-10 w-64 h-64 bg-starwars-purple rounded-full filter blur-3xl opacity-10 animate-pulse"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold font-orbitron mb-6 neon-text">Modes de Jeu Interstellaires</h2>
+                <div class="w-24 h-1 bg-starwars-blue mx-auto mb-6"></div>
+                <p class="text-xl max-w-3xl mx-auto">Plongez dans l'univers futuriste avec nos modes de jeu inspirés de l'univers Star Wars. Chaque mission offre une expérience unique de collaboration et de compétition.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div class="glass-effect rounded-2xl shadow-xl overflow-hidden border border-gray-700 hover:border-starwars-blue transition-all duration-500">
+                    <div class="p-8">
+                        <div class="flex items-start mb-6">
+                            <div class="w-16 h-16 rounded-lg flex items-center justify-center mr-6 bg-blue-900 bg-opacity-50 border border-starwars-blue">
+                                <i class="fas fa-flag-checkered text-starwars-blue text-3xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-orbitron mb-2">Course du Millennium Falcon</h3>
+                                <p class="text-starwars-blue font-medium">Vitesse et précision</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 mb-6">Pilotez votre X-Wing à travers un parcours interstellaire chronométré avec des obstacles. Le chrono s'arrête automatiquement grâce à nos portes de détection avancées.</p>
+                        <ul class="space-y-3 mb-6">
+                            <li class="flex items-center"><i class="fas fa-medal text-starwars-yellow mr-3"></i> Records individuels et par équipe</li>
+                            <li class="flex items-center"><i class="fas fa-stopwatch text-starwars-blue mr-3"></i> Chronométrage précis au millième</li>
+                            <li class="flex items-center"><i class="fas fa-route text-green-500 mr-3"></i> Parcours modifiables selon le niveau</li>
+                        </ul>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="bg-blue-900 bg-opacity-50 text-starwars-blue px-4 py-2 rounded-full text-sm font-orbitron">Compétitif</span>
+                            <span class="bg-blue-900 bg-opacity-50 text-starwars-blue px-4 py-2 rounded-full text-sm font-orbitron">Technique</span>
+                            <span class="bg-blue-900 bg-opacity-50 text-starwars-blue px-4 py-2 rounded-full text-sm font-orbitron">Rapide</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-effect rounded-2xl shadow-xl overflow-hidden border border-gray-700 hover:border-starwars-red transition-all duration-500">
+                    <div class="p-8">
+                        <div class="flex items-start mb-6">
+                            <div class="w-16 h-16 rounded-lg flex items-center justify-center mr-6 bg-red-900 bg-opacity-50 border border-starwars-red">
+                                <i class="fas fa-crosshairs text-starwars-red text-3xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-orbitron mb-2">Bataille d'Endor</h3>
+                                <p class="text-starwars-red font-medium">Combat tactique</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 mb-6">Mode combat où les équipes s'affrontent dans une arène stratégique. Les drones sont équipés de systèmes de détection de tirs laser pour des batailles immersives.</p>
+                        <ul class="space-y-3 mb-6">
+                            <li class="flex items-center"><i class="fas fa-shield-alt text-starwars-red mr-3"></i> Points de vie par drone</li>
+                            <li class="flex items-center"><i class="fas fa-bullseye text-starwars-yellow mr-3"></i> Système de détection de tirs précis</li>
+                            <li class="flex items-center"><i class="fas fa-users text-green-500 mr-3"></i> Jusqu'à 30 joueurs simultanément</li>
+                        </ul>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="bg-red-900 bg-opacity-50 text-starwars-red px-4 py-2 rounded-full text-sm font-orbitron">Combat</span>
+                            <span class="bg-red-900 bg-opacity-50 text-starwars-red px-4 py-2 rounded-full text-sm font-orbitron">Stratégie</span>
+                            <span class="bg-red-900 bg-opacity-50 text-starwars-red px-4 py-2 rounded-full text-sm font-orbitron">Équipe</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-effect rounded-2xl shadow-xl overflow-hidden border border-gray-700 hover:border-starwars-purple transition-all duration-500 lg:col-span-2">
+                    <div class="p-8">
+                        <div class="flex items-start mb-6">
+                            <div class="w-16 h-16 rounded-lg flex items-center justify-center mr-6 bg-purple-900 bg-opacity-50 border border-starwars-purple">
+                                <i class="fas fa-door-open text-starwars-purple text-3xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-orbitron mb-2">Conquête de Tatooine</h3>
+                                <p class="text-starwars-purple font-medium">Contrôle territorial</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 mb-8">Les équipes doivent capturer le maximum de portes dans un temps imparti. Chaque porte capturée rapporte des points selon sa valeur stratégique dans la galaxie.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                            <div>
+                                <h4 class="font-orbitron text-lg mb-4 text-starwars-purple">Fonctionnalités :</h4>
+                                <ul class="space-y-3">
+                                    <li class="flex items-center"><i class="fas fa-link text-starwars-purple mr-3"></i> Portes interconnectées</li>
+                                    <li class="flex items-center"><i class="fas fa-clock text-starwars-blue mr-3"></i> Timer synchronisé</li>
+                                    <li class="flex items-center"><i class="fas fa-star text-starwars-yellow mr-3"></i> Bonus pour zones stratégiques</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-orbitron text-lg mb-4 text-starwars-purple">Avantages :</h4>
+                                <ul class="space-y-3">
+                                    <li class="flex items-center"><i class="fas fa-sync-alt text-green-500 mr-3"></i> Suivi en temps réel</li>
+                                    <li class="flex items-center"><i class="fas fa-chart-bar text-starwars-yellow mr-3"></i> Statistiques détaillées</li>
+                                    <li class="flex items-center"><i class="fas fa-tasks text-starwars-purple mr-3"></i> Stratégies multiples possibles</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="bg-purple-900 bg-opacity-50 text-starwars-purple px-4 py-2 rounded-full text-sm font-orbitron">Stratégie</span>
+                            <span class="bg-purple-900 bg-opacity-50 text-starwars-purple px-4 py-2 rounded-full text-sm font-orbitron">Territoire</span>
+                            <span class="bg-purple-900 bg-opacity-50 text-starwars-purple px-4 py-2 rounded-full text-sm font-orbitron">Collaboration</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section class="py-20 bg-gray-900 relative">
+        <div class="stars absolute inset-0 z-0"></div>
+        <div class="absolute top-10 right-10 w-96 h-96 bg-starwars-blue rounded-full filter blur-3xl opacity-5 animate-pulse"></div>
+        <div class="absolute bottom-10 left-10 w-96 h-96 bg-starwars-purple rounded-full filter blur-3xl opacity-5 animate-pulse"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold font-orbitron mb-6 neon-text">Technologie Interstellaire</h2>
+                <div class="w-24 h-1 bg-starwars-blue mx-auto mb-6"></div>
+                <p class="text-xl max-w-3xl mx-auto">Notre système innovant combine drones FPV, lasers et capteurs pour une expérience immersive unique inspirée de la galaxie Star Wars.</p>
+            </div>
+            
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                <div class="lg:w-1/2">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="glass-effect rounded-xl p-6 border border-gray-700 hover:border-starwars-blue transition-all duration-300">
+                            <div class="w-14 h-14 rounded-lg flex items-center justify-center bg-blue-900 bg-opacity-50 mb-4">
+                                <i class="fas fa-microchip text-2xl text-starwars-blue"></i>
+                            </div>
+                            <h3 class="font-orbitron text-lg mb-2">Drones X-Wing</h3>
+                            <p class="text-gray-300 text-sm">Drones ultra-réactifs avec caméras haute définition pour une immersion totale dans l'espace.</p>
+                        </div>
+                        <div class="glass-effect rounded-xl p-6 border border-gray-700 hover:border-starwars-red transition-all duration-300">
+                            <div class="w-14 h-14 rounded-lg flex items-center justify-center bg-red-900 bg-opacity-50 mb-4">
+                                <i class="fas fa-laser text-2xl text-starwars-red"></i>
+                            </div>
+                            <h3 class="font-orbitron text-lg mb-2">Système Laser</h3>
+                            <p class="text-gray-300 text-sm">Lasers sécurisés et capteurs infrarouges pour une détection précise des impacts comme dans l'univers Star Wars.</p>
+                        </div>
+                        <div class="glass-effect rounded-xl p-6 border border-gray-700 hover:border-starwars-purple transition-all duration-300">
+                            <div class="w-14 h-14 rounded-lg flex items-center justify-center bg-purple-900 bg-opacity-50 mb-4">
+                                <i class="fas fa-door-closed text-2xl text-starwars-purple"></i>
+                            </div>
+                            <h3 class="font-orbitron text-lg mb-2">Portes Hyperspace</h3>
+                            <p class="text-gray-300 text-sm">Capteurs RFID pour identifier instantanément les drones et valider les passages interstellaires.</p>
+                        </div>
+                        <div class="glass-effect rounded-xl p-6 border border-gray-700 hover:border-starwars-yellow transition-all duration-300">
+                            <div class="w-14 h-14 rounded-lg flex items-center justify-center bg-yellow-900 bg-opacity-50 mb-4">
+                                <i class="fas fa-tachometer-alt text-2xl text-starwars-yellow"></i>
+                            </div>
+                            <h3 class="font-orbitron text-lg mb-2">Suivi en Temps Réel</h3>
+                            <p class="text-gray-300 text-sm">Tableau de bord holographique affichant scores, positions et statistiques en direct.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lg:w-1/2">
+                    <div class="glass-effect rounded-2xl p-8 border border-gray-700">
+                        <h3 class="text-2xl font-orbitron mb-8 text-center">Comment ça marche ?</h3>
+                        <div class="space-y-8">
+                            <div class="flex">
+                                <div class="mr-6">
+                                    <div class="w-14 h-14 rounded-full bg-starwars-blue flex items-center justify-center font-orbitron text-xl pulse-glow">1</div>
+                                </div>
+                                <div>
+                                    <h4 class="font-orbitron text-xl mb-3">Inscription & Briefing</h4>
+                                    <p class="text-gray-300">Les participants reçoivent leur drone X-Wing et un briefing sur les règles du jeu interstellaire.</p>
+                                </div>
+                            </div>
+                            <div class="flex">
+                                <div class="mr-6">
+                                    <div class="w-14 h-14 rounded-full bg-starwars-yellow flex items-center justify-center font-orbitron text-xl pulse-glow">2</div>
+                                </div>
+                                <div>
+                                    <h4 class="font-orbitron text-xl mb-3">Pilotage & Jeu</h4>
+                                    <p class="text-gray-300">Les équipes s'affrontent selon le mode de jeu choisi avec suivi en temps réel via notre tableau de bord holographique.</p>
+                                </div>
+                            </div>
+                            <div class="flex">
+                                <div class="mr-6">
+                                    <div class="w-14 h-14 rounded-full bg-starwars-purple flex items-center justify-center font-orbitron text-xl pulse-glow">3</div>
+                                </div>
+                                <div>
+                                    <h4 class="font-orbitron text-xl mb-3">Analyse & Classement</h4>
+                                    <p class="text-gray-300">Résultats détaillés avec statistiques de performance et remise des trophées interstellaires.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-10 text-center">
+                            <div class="inline-block glass-effect rounded-full px-6 py-3 border border-starwars-blue">
+                                <span class="font-orbitron text-starwars-blue">TECHNOLOGIE CERTIFIÉE GALACTIQUE</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="tarifs" class="py-20 bg-gray-900 relative">
+        <div class="stars absolute inset-0 z-0"></div>
+        <div class="absolute top-20 left-20 w-80 h-80 bg-starwars-blue rounded-full filter blur-3xl opacity-10 animate-pulse"></div>
+        <div class="absolute bottom-20 right-20 w-80 h-80 bg-starwars-purple rounded-full filter blur-3xl opacity-10 animate-pulse"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold font-orbitron mb-6 neon-text">Formules Interstellaires</h2>
+                <div class="w-24 h-1 bg-starwars-blue mx-auto mb-6"></div>
+                <p class="text-xl max-w-3xl mx-auto">Choisissez la formule qui correspond à vos besoins et budget pour un événement mémorable inspiré de l'univers Star Wars.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="glass-effect rounded-2xl shadow-xl overflow-hidden border border-gray-700 hover:border-starwars-blue transition-all duration-500">
+                    <div class="bg-gray-800 py-8 text-center border-b border-gray-700">
+                        <h3 class="text-2xl font-orbitron">Découverte</h3>
+                        <p class="text-gray-400 mt-2">Parfait pour débuter</p>
+                    </div>
+                    <div class="p-8">
+                        <div class="mb-8">
+                            <span class="text-5xl font-orbitron font-bold text-starwars-blue">€149</span>
+                            <span class="text-gray-400">/événement</span>
+                        </div>
+                        <ul class="space-y-5 mb-10">
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-blue mr-4"></i> Jusqu'à 6 participants</li>
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-blue mr-4"></i> 1 heure d'activité</li>
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-blue mr-4"></i> 1 mode de jeu au choix</li>
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-blue mr-4"></i> Briefing et encadrement</li>
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-blue mr-4"></i> Résultats et classement</li>
+                            <li class="flex items-center text-gray-500"><i class="fas fa-times mr-4"></i> Personnalisation de l'expérience</li>
+                            <li class="flex items-center text-gray-500"><i class="fas fa-times mr-4"></i> Matériel supplémentaire</li>
+                        </ul>
+                        <a href="#contact" class="block w-full bg-gray-800 hover:bg-gray-700 text-white text-center py-4 rounded-lg font-orbitron transition duration-300 border border-gray-700 hover:border-starwars-blue">RÉSERVER</a>
+                    </div>
+                </div>
+                
+                <div class="glass-effect rounded-2xl shadow-2xl overflow-hidden border-2 border-starwars-blue relative transform hover:-translate-y-2 transition-all duration-500">
+                    <div class="absolute -top-4 right-4 bg-starwars-blue text-dark py-1 px-6 rounded-full font-orbitron text-sm font-bold">POPULAIRE</div>
+                    <div class="bg-gradient-to-r from-starwars-blue to-blue-700 py-8 text-center border-b border-gray-700">
+                        <h3 class="text-2xl font-orbitron text-dark">Performance</h3>
+                        <p class="text-dark opacity-90 mt-2">Pour des événements complets</p>
+                    </div>
+                    <div class="p-8">
+                        <div class="mb-8">
+                            <span class="text-5xl font-orbitron font-bold text-starwars-blue">€249</span>
+                            <span class="text-gray-400">/événement</span>
+                        </div>
+                        <ul class="space-y-5 mb-10">
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-blue mr-4"></i> Jusqu'à 15 participants</li>
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-blue mr-4"></i> 2 heures d'activité</li>
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-blue mr-4"></i> Tous les modes de jeu</li>
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-blue mr-4"></i> Briefing et encadrement</li>
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-blue mr-4"></i> Résultats détaillés</li>
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-blue mr-4"></i> Personnalisation de l'expérience</li>
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-blue mr-4"></i> Matériel supplémentaire inclus</li>
+                        </ul>
+                        <a href="#contact" class="block w-full bg-starwars-blue hover:bg-blue-500 text-dark text-center py-4 rounded-lg font-orbitron font-bold transition duration-300">RÉSERVER</a>
+                    </div>
+                </div>
+                
+                <div class="glass-effect rounded-2xl shadow-xl overflow-hidden border border-gray-700 hover:border-starwars-purple transition-all duration-500">
+                    <div class="bg-gray-800 py-8 text-center border-b border-gray-700">
+                        <h3 class="text-2xl font-orbitron">Personnalisée</h3>
+                        <p class="text-gray-400 mt-2">Pour des besoins spécifiques</p>
+                    </div>
+                    <div class="p-8">
+                        <div class="mb-8">
+                            <span class="text-5xl font-orbitron font-bold text-starwars-purple">Devis</span>
+                            <span class="text-gray-400 block">/sur mesure</span>
+                        </div>
+                        <ul class="space-y-5 mb-10">
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-purple mr-4"></i> Participants illimités</li>
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-purple mr-4"></i> Durée personnalisable</li>
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-purple mr-4"></i> Tous les modes de jeu</li>
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-purple mr-4"></i> Encadrement dédié</li>
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-purple mr-4"></i> Analyse approfondie</li>
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-purple mr-4"></i> Personnalisation complète</li>
+                            <li class="flex items-center"><i class="fas fa-check text-starwars-purple mr-4"></i> Matériel premium</li>
+                        </ul>
+                        <a href="#contact" class="block w-full bg-gray-800 hover:bg-gray-700 text-white text-center py-4 rounded-lg font-orbitron transition duration-300 border border-gray-700 hover:border-starwars-purple">DEMANDER UN DEVIS</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-20 bg-gray-900 relative">
+        <div class="stars absolute inset-0 z-0"></div>
+        <div class="absolute top-10 right-10 w-64 h-64 bg-starwars-blue rounded-full filter blur-3xl opacity-10 animate-pulse"></div>
+        <div class="absolute bottom-10 left-10 w-64 h-64 bg-starwars-purple rounded-full filter blur-3xl opacity-10 animate-pulse"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold font-orbitron mb-6 neon-text">Témoignages Interstellaires</h2>
+                <div class="w-24 h-1 bg-starwars-blue mx-auto mb-6"></div>
+                <p class="text-xl max-w-3xl mx-auto">Découvrez ce que nos clients disent de leurs expériences avec DroneLaser dans l'univers Star Wars</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="glass-effect rounded-2xl p-8 border border-gray-700 hover:border-starwars-blue transition-all duration-500">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 rounded-full bg-gray-700 mr-4 flex items-center justify-center">
+                            <i class="fas fa-user text-2xl text-starwars-blue"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-orbitron text-lg">Sophie Martin</h4>
+                            <p class="text-gray-400 text-sm">DRH chez TechInnov</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 italic mb-6">"L'événement a été un succès total ! Nos équipes ont adoré la combinaison de technologie et de compétition. Une vraie révélation pour notre team building."</p>
+                    <div class="flex text-starwars-yellow">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="mt-4">
+                        <span class="inline-block bg-blue-900 bg-opacity-50 text-starwars-blue px-3 py-1 rounded-full text-xs font-orbitron">TEAM BUILDING</span>
+                    </div>
+                </div>
+                
+                <div class="glass-effect rounded-2xl p-8 border border-gray-700 hover:border-starwars-yellow transition-all duration-500">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 rounded-full bg-gray-700 mr-4 flex items-center justify-center">
+                            <i class="fas fa-user text-2xl text-starwars-yellow"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-orbitron text-lg">Thomas Dubois</h4>
+                            <p class="text-gray-400 text-sm">Directeur Marketing chez GrowthLab</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 italic mb-6">"Une expérience unique qui a vraiment renforcé la cohésion de nos équipes. La technologie est impressionnante et l'encadrement professionnel."</p>
+                    <div class="flex text-starwars-yellow">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <div class="mt-4">
+                        <span class="inline-block bg-yellow-900 bg-opacity-50 text-starwars-yellow px-3 py-1 rounded-full text-xs font-orbitron">TOURNOI</span>
+                    </div>
+                </div>
+                
+                <div class="glass-effect rounded-2xl p-8 border border-gray-700 hover:border-starwars-purple transition-all duration-500">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 rounded-full bg-gray-700 mr-4 flex items-center justify-center">
+                            <i class="fas fa-user text-2xl text-starwars-purple"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-orbitron text-lg">Marie Lambert</h4>
+                            <p class="text-gray-400 text-sm">CEO chez StartUpFlow</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 italic mb-6">"Nous avons organisé un tournoi entre nos différents bureaux. L'engagement était maximal et les retours très positifs. Un investissement rentabilisé!"</p>
+                    <div class="flex text-starwars-yellow">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="mt-4">
+                        <span class="inline-block bg-purple-900 bg-opacity-50 text-starwars-purple px-3 py-1 rounded-full text-xs font-orbitron">COMPÉTITION</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-900 relative">
+        <div class="stars absolute inset-0 z-0"></div>
+        <div class="absolute top-20 left-20 w-80 h-80 bg-starwars-blue rounded-full filter blur-3xl opacity-10 animate-pulse"></div>
+        <div class="absolute bottom-20 right-20 w-80 h-80 bg-starwars-purple rounded-full filter blur-3xl opacity-10 animate-pulse"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-5xl mx-auto rounded-2xl overflow-hidden shadow-2xl">
+                <div class="md:flex">
+                    <div class="md:w-1/2 bg-gradient-to-br from-starwars-blue to-blue-800 text-white p-12">
+                        <h2 class="text-3xl font-orbitron font-bold mb-6">Contactez-nous</h2>
+                        <p class="mb-10 text-lg">Prêt à organiser un événement interstellaire pour votre entreprise ? Notre équipe est à votre disposition pour répondre à toutes vos questions.</p>
+                        
+                        <div class="space-y-8">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-4">
+                                    <i class="fas fa-map-marker-alt text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-orbitron text-lg mb-2">Adresse</h3>
+                                    <p class="text-blue-100">123 Avenue des Technologies<br>75015 Paris, France</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-4">
+                                    <i class="fas fa-phone-alt text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-orbitron text-lg mb-2">Téléphone</h3>
+                                    <p class="text-blue-100">+33 1 23 45 67 89</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-4">
+                                    <i class="fas fa-envelope text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-orbitron text-lg mb-2">Email</h3>
+                                    <p class="text-blue-100">contact@dronelaser.fr</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-12">
+                            <h3 class="font-orbitron text-lg mb-6">Suivez-nous dans la galaxie</h3>
+                            <div class="flex space-x-4">
+                                <a href="#" class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition duration-300">
+                                    <i class="fab fa-facebook-f text-xl"></i>
+                                </a>
+                                <a href="#" class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition duration-300">
+                                    <i class="fab fa-instagram text-xl"></i>
+                                </a>
+                                <a href="#" class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition duration-300">
+                                    <i class="fab fa-linkedin-in text-xl"></i>
+                                </a>
+                                <a href="#" class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition duration-300">
+                                    <i class="fab fa-youtube text-xl"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-1/2 bg-gray-800 p-12">
+                        <form id="contactForm" class="space-y-6">
+                            <div>
+                                <label class="block text-gray-300 font-orbitron mb-2">Nom de l'entreprise *</label>
+                                <input type="text" required class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-starwars-blue focus:border-transparent text-white">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-300 font-orbitron mb-2">Votre nom *</label>
+                                <input type="text" required class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-starwars-blue focus:border-transparent text-white">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-300 font-orbitron mb-2">Email *</label>
+                                <input type="email" required class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-starwars-blue focus:border-transparent text-white">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-300 font-orbitron mb-2">Nombre de participants</label>
+                                <select class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-starwars-blue focus:border-transparent text-white">
+                                    <option class="bg-gray-800">Moins de 10</option>
+                                    <option class="bg-gray-800">10-25</option>
+                                    <option class="bg-gray-800">25-50</option>
+                                    <option class="bg-gray-800">Plus de 50</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-300 font-orbitron mb-2">Message</label>
+                                <textarea rows="5" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-starwars-blue focus:border-transparent text-white"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-gradient-to-r from-starwars-blue to-blue-600 hover:from-blue-600 hover:to-starwars-blue text-dark font-orbitron font-bold py-4 px-6 rounded-lg transition duration-300 transform hover:scale-105">
+                                ENVOYER MA DEMANDE
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8 border-t border-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="flex items-center mb-6">
+                        <div class="relative mr-3">
+                            <i class="fas fa-drone text-starwars-blue text-3xl pulse-glow"></i>
+                            <div class="absolute -top-1 -right-1 w-2 h-2 bg-starwars-yellow rounded-full animate-ping"></div>
+                        </div>
+                        <h2 class="text-2xl font-orbitron font-bold">DRONE<span class="text-starwars-blue">LASER</span></h2>
+                    </div>
+                    <p class="text-gray-400 mb-6">Des événements d'entreprise interstellaires avec nos drones FPV équipés de lasers pour des expériences de team building uniques inspirées de l'univers Star Wars.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-starwars-blue transition duration-300">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-starwars-blue transition duration-300">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-starwars-blue transition duration-300">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-starwars-blue transition duration-300">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-orbitron font-bold mb-6 text-starwars-blue">Services</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-starwars-blue transition">Team Building Galactique</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-starwars-blue transition">Tournois Interstellaires</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-starwars-blue transition">Formation Jedi</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-starwars-blue transition">Animations Événementielles</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-starwars-blue transition">Location de Matériel</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-orbitron font-bold mb-6 text-starwars-blue">Liens Utiles</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-starwars-blue transition">À Propos</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-starwars-blue transition">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-starwars-blue transition">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-starwars-blue transition">Conditions Générales</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-starwars-blue transition">Mentions Légales</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-orbitron font-bold mb-6 text-starwars-blue">Newsletter Interstellaire</h3>
+                    <p class="text-gray-400 mb-4">Recevez nos offres spéciales et actualités galactiques.</p>
+                    <div class="flex">
+                        <input type="email" placeholder="Votre email" class="px-4 py-2 w-full rounded-l-lg focus:outline-none bg-gray-800 text-white border border-gray-700">
+                        <button class="bg-starwars-blue hover:bg-blue-500 px-4 rounded-r-lg text-dark font-orbitron">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-500">
+                <p class="font-orbitron">&copy; 2023 DRONE<span class="text-starwars-blue">LASER</span>. Tous droits réservés. | Créé avec <i class="fas fa-heart text-red-500"></i> pour l'innovation interstellaire</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Form submission handling
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Merci pour votre message ! Nous vous contacterons dans les plus brefs délais.');
+            this.reset();
+        });
+
+        // Simple animation on scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                if (sectionTop < windowHeight * 0.75) {
+                    section.style.opacity = 1;
+                    section.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.style.opacity = 0;
+                section.style.transform = 'translateY(20px)';
+                section.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            });
+            
+            // Trigger initial animation for first section
+            setTimeout(() => {
+                if (sections.length > 0) {
+                    sections[0].style.opacity = 1;
+                    sections[0].style.transform = 'translateY(0)';
+                }
+            }, 300);
+        });
+    </script>
+</body>
+</html>
