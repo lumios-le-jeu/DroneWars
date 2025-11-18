@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DroneLaser - Événements d'Équipe avec Drones FPV</title>
+    <title>DroneWars - Événements d'Équipe avec Drones FPV</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -543,7 +543,7 @@
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-5xl font-bold font-orbitron mb-6 neon-text">Témoignages Interstellaires</h2>
                 <div class="w-24 h-1 bg-starwars-blue mx-auto mb-6"></div>
-                <p class="text-xl max-w-3xl mx-auto">Découvrez ce que nos clients disent de leurs expériences avec DroneLaser dans l'univers Star Wars</p>
+                <p class="text-xl max-w-3xl mx-auto">Découvrez ce que nos clients disent de leurs expériences avec DroneWars dans l'univers Star Wars</p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -659,7 +659,7 @@
                                 </div>
                                 <div>
                                     <h3 class="font-orbitron text-lg mb-2">Email</h3>
-                                    <p class="text-blue-100">contact@dronelaser.fr</p>
+                                    <p class="text-blue-100">contact@DroneWars.fr</p>
                                 </div>
                             </div>
                         </div>
@@ -685,40 +685,42 @@
                     
                     <div class="md:w-1/2 bg-gray-800 p-12">
                         <form id="contactForm" class="space-y-6">
+
                             <div>
                                 <label class="block text-gray-300 font-orbitron mb-2">Nom de l'entreprise *</label>
-                                <input type="text" required class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-starwars-blue focus:border-transparent text-white">
+                                <input name="entreprise" type="text" required class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white">
                             </div>
-                            
+
                             <div>
                                 <label class="block text-gray-300 font-orbitron mb-2">Votre nom *</label>
-                                <input type="text" required class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-starwars-blue focus:border-transparent text-white">
+                                <input name="nom" type="text" required class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white">
                             </div>
-                            
+
                             <div>
                                 <label class="block text-gray-300 font-orbitron mb-2">Email *</label>
-                                <input type="email" required class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-starwars-blue focus:border-transparent text-white">
+                                <input name="email" type="email" required class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white">
                             </div>
-                            
+
                             <div>
                                 <label class="block text-gray-300 font-orbitron mb-2">Nombre de participants</label>
-                                <select class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-starwars-blue focus:border-transparent text-white">
-                                    <option class="bg-gray-800">Moins de 10</option>
-                                    <option class="bg-gray-800">10-25</option>
-                                    <option class="bg-gray-800">25-50</option>
-                                    <option class="bg-gray-800">Plus de 50</option>
+                                <select name="participants" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white">
+                                    <option>Moins de 10</option>
+                                    <option>10-25</option>
+                                    <option>25-50</option>
+                                    <option>Plus de 50</option>
                                 </select>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-gray-300 font-orbitron mb-2">Message</label>
-                                <textarea rows="5" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-starwars-blue focus:border-transparent text-white"></textarea>
+                                <textarea name="message" rows="5" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white"></textarea>
                             </div>
-                            
-                            <button type="submit" class="w-full bg-gradient-to-r from-starwars-blue to-blue-600 hover:from-blue-600 hover:to-starwars-blue text-dark font-orbitron font-bold py-4 px-6 rounded-lg transition duration-300 transform hover:scale-105">
+
+                            <button type="submit" class="w-full bg-gradient-to-r from-starwars-blue to-blue-600 hover:from-blue-600 hover:to-starwars-blue text-dark font-orbitron font-bold py-4 px-6 rounded-lg">
                                 ENVOYER MA DEMANDE
                             </button>
                         </form>
+
                     </div>
                 </div>
             </div>
@@ -795,7 +797,7 @@
     </footer>
 
     <script>
-        // Smooth scrolling for navigation links
+        // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -805,27 +807,18 @@
             });
         });
 
-        // Form submission handling
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Merci pour votre message ! Nous vous contacterons dans les plus brefs délais.');
-            this.reset();
-        });
-
-        // Simple animation on scroll
+        // Scroll animations
         window.addEventListener('scroll', function() {
             const sections = document.querySelectorAll('section');
+            const windowHeight = window.innerHeight;
             sections.forEach(section => {
-                const sectionTop = section.getBoundingClientRect().top;
-                const windowHeight = window.innerHeight;
-                if (sectionTop < windowHeight * 0.75) {
+                if (section.getBoundingClientRect().top < windowHeight * 0.75) {
                     section.style.opacity = 1;
                     section.style.transform = 'translateY(0)';
                 }
             });
         });
 
-        // Initialize animations
         document.addEventListener('DOMContentLoaded', function() {
             const sections = document.querySelectorAll('section');
             sections.forEach(section => {
@@ -833,15 +826,38 @@
                 section.style.transform = 'translateY(20px)';
                 section.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
             });
-            
-            // Trigger initial animation for first section
-            setTimeout(() => {
-                if (sections.length > 0) {
-                    sections[0].style.opacity = 1;
-                    sections[0].style.transform = 'translateY(0)';
-                }
-            }, 300);
         });
-    </script>
+
+        // 🚀 FORMULAIRE → GOOGLE SHEETS
+        document.getElementById('contactForm').addEventListener("submit", function(e){
+            e.preventDefault();
+
+            const formData = {
+                entreprise: e.target.entreprise.value,
+                nom: e.target.nom.value,
+                email: e.target.email.value,
+                participants: e.target.participants.value,
+                message: e.target.message.value
+            };
+
+            fetch("https://script.google.com/macros/s/AKfycbzWtsrW4z39ZpVSrDz48yW45wH3XtEZCzn9ROA94ZhiBNLhgT1zxcyid56KmPUP-Ezfjg/exec", {
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(() => {
+                alert("Message envoyé ! 🚀 Nous vous contacterons rapidement.");
+                e.target.reset();
+            })
+            .catch(err => {
+                alert("Erreur lors de l’envoi 😢");
+                console.log(err);
+            });
+        });
+        </script>
+
 </body>
 </html>
